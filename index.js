@@ -5,8 +5,18 @@ const analyzerHandler = require('./routeHandlers/analyzerHandler');
 
 
 const app = express();
-app.use(cors()); // In production, consider narrowing this to your Vercel URL
+app.use(cors({
+    origin: '*', // Allow all for debugging, we can narrow it down once it works
+    methods: ['GET', 'POST', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization']
+}));
 app.use(express.json());
+
+// Request logger
+app.use((req, res, next) => {
+    console.log(`${new Date().toISOString()} - ${req.method} ${req.url}`);
+    next();
+});
 
 // Health check endpoint
 app.get('/health', (req, res) => {

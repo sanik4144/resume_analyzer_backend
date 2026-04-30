@@ -1,6 +1,5 @@
 const express = require('express');
 const router = express.Router();
-const { getCVText, setCVText } = require('../pdfHandlers/cvStore');
 const {extractCV} = require('../pdfHandlers/pdfParser');
 const { GoogleGenAI } = require('@google/genai');
 const { parse } = require('dotenv');
@@ -11,17 +10,17 @@ const ai = new GoogleGenAI({
     apiKey: process.env.GEMINI_API_KEY
 });
 
-// Multer storage
-const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        cb(null, path.join(__dirname, '..'));
-    },
-    filename: function (req, file, cb) {
-        cb(null, 'resume.pdf');
+const upload = multer({ 
+    storage: multer.memoryStorage(),
+    limits: { fileSize: 5 * 1024 * 1024 },
+    fileFilter: function (req, file, cb) {
+        if (file.mimetype === 'application/pdf') {
+            cb(null, true);
+        } else {
+            cb(new Error('Only PDF files are allowed!'), false);
+        }
     }
 });
-
-const upload = multer({ storage: storage });
 
 // Serve HTML form
 router.get('/apply', (req, res) => {
@@ -31,13 +30,10 @@ router.get('/apply', (req, res) => {
 
 router.post('/analyze', upload.single('cvFile'), async (req, res)=>{
     try {
-        if (!req.file) return res.status(400).send('No CV uploaded');
+        if (!req.file) return res.status(400).send('No CV uploaded or invalid file type');
 
-        const cvText = await extractCV('./resume.pdf');
-        setCVText(cvText);
-        console.log('CV loaded successfully');
-
-        const cv = getCVText();
+        const cv = await extractCV(req.file.buffer);
+        console.log('CV parsed successfully');
 
         const cleanedBody = Object.fromEntries(
             Object.entries(req.body).map(([key, value]) => [

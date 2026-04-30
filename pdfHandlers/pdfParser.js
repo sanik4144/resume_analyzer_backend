@@ -1,7 +1,6 @@
 const { PDFParse } = require('pdf-parse');
 
 async function extractCV(fileUrl) {
-    // If no URL provided, warn and skip
     if (!fileUrl) {
         console.warn('⚠️ No file uploaded, skipping CV extraction.');
         return null;

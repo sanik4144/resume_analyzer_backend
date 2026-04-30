@@ -14,10 +14,10 @@ const ai = new GoogleGenAI({
 // Multer storage
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, path.join(__dirname, '..')); // save in project folder
+        cb(null, path.join(__dirname, '..'));
     },
     filename: function (req, file, cb) {
-        cb(null, 'resume.pdf'); // always save uploaded CV as resume.pdf
+        cb(null, 'resume.pdf');
     }
 });
 
@@ -44,7 +44,7 @@ router.post('/analyze', upload.single('cvFile'), async (req, res)=>{
                 key,
                 typeof value === 'string'
                 ? value.replace(/\n/g, ' ').replace(/\s+/g, ' ').trim()
-                : value // leave files or other types untouched
+                : value
             ])
             );
 

@@ -35,7 +35,6 @@ build/
 Thumbs.db
 
 # IDEs / Editors
-.vscode/
 .idea/
 *.sublime-workspace
 *.sublime-project
@@ -52,3 +51,7 @@ Thumbs.db
 # Temporary files
 *.tmp
 *.temp
+branch_structure.json
+temp_auto_push.bat
+temp_interactive_push.bat
+.gitignore

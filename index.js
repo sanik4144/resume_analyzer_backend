@@ -17,7 +17,7 @@ const apiLimiter = rateLimit({
 app.use('/analyze', apiLimiter);
 
 app.use(cors({
-    origin: process.env.FRONTEND_URL || 'http://localhost:5173', // Restrict to frontend origin
+    origin: "*", // Restrict to frontend origin
     methods: ['GET', 'POST', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization']
 }));
